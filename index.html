@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Tracés de bus</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+  <style>
+    #map {
+      height: 500px;
+    }
+    
+    .label {
+      border-radius: 5px;
+      padding: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Tracés de bus</h1>
+  <div id="map"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+  <script>
+
+
+    // Données des tracés de bus
+    var busRoutes = [
+      {
+        id: 1,
+        name: "TEOR T1",
+        coordinates: [
+          {
+            w: 1.62,
+            c:
+              [
+                49.4658151874,
+                1.0703141694
+              ]
+          },
+          {
+            w: 2.24,
+            c:
+              [
+                49.4617001175,
+                1.0762598116
+              ]
+          },
+          {
+            w: 5.98,
+            c:
+              [
+                49.461656434025,
+                1.071020017625
+              ]
+          },
+          {
+            w: 7.9,
+            c:
+              [
+                49.4586408704,
+                1.06799018225
+              ]
+          },
+          {
+            w: 20.62,
+            c:
+              [
+                49.4517793768,
+                1.06861425545
+              ]
+          },
+          {
+            w: 19.84,
+            c:
+              [
+                49.4490252686,
+                1.064404613
+              ]
+          },
+          {
+            w: 21,
+            c: // Mont-riboudet
+              [
+                49.4464697933,
+                1.0704135678
+              ]
+          },
+          {
+            w: 20.6,
+            c: // Luciline
+              [
+                49.4434153694,
+                1.0768475251
+              ]
+          },
+          {
+            w: 19.64,
+            n: "Pasteur",
+            c: 
+              [
+                49.4406121954,
+                1.0828543604
+              ]
+          },
+          {
+            w: 17.36,
+            c:
+              [
+                49.4403001762,
+                1.0891442708
+              ]
+          },
+          {
+            w: 14.72,
+            c:
+              [
+                49.4395437008,
+                1.0924415479
+              ]
+          },
+          {
+            w: 12.04,
+            c:
+              [
+                49.4396721037,
+                1.0970536309
+              ]
+          },
+          {
+            w: 9.04,
+            c:
+              [
+                49.4379687903,
+                1.1017787737
+              ]
+          },
+          {
+            w: 5.18,
+            c:
+              [
+                49.4380775817,
+                1.1053855336
+              ]
+          },
+          {
+            w: 1,
+            c:
+              [
+                49.43951778155,
+                1.11050338345
+              ]
+          }
+        ]
+      },
+      // Ajouter les données pour chaque ligne de bus ici
+    ];
+
+    // Création de la carte
+    var myMap = L.map("map").setView([49.44728751634068, 1.1050784534757832], 13);
+
+    // Ajout de la couche OpenStreetMap à la carte
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "Map data &copy; OpenStreetMap contributors"
+    }).addTo(myMap);
+
+    // Parcours des données de chaque ligne de bus pour afficher le tracé sur la carte
+    for (var i = 0; i < busRoutes.length; i++) {
+      var route = busRoutes[i];
+
+      for (var i = 1; i < route.coordinates.length; i++) {
+        coordinates = [route.coordinates[i - 1].c, route.coordinates[i].c]
+        weight = route.coordinates[i - 1].w
+        var busRoute = L.polyline(coordinates, { color: "red", weight: weight }).addTo(myMap);
+        var label = L.marker(route.coordinates[i-1].c, {
+          icon: L.divIcon({
+            className: "label",
+            html: route.coordinates[i-1].n || "rien"
+          })
+        }).addTo(myMap);
+      }
+
+      // Ajout d'un label avec le nom de la ligne de bus à la première position du tracé
+      var label = L.marker(route.coordinates[0].c, {
+        icon: L.divIcon({
+          className: "label",
+          html: route.name
+        })
+      }).addTo(myMap);
+
+
+      /**
+      // Ajout d'un événement sur le tracé pour modifier l'épaisseur en fonction de la fréquentation
+      busRoute.on("click", function () {
+        // Simulation de la fréquentation
+        var frequency = Math.floor(Math.random() * 10);
+
+        // Modification de l'épaisseur du tracé en fonction de la fréquentation
+        busRoute.setStyle({
+          weight: frequency + 1
+        });
+
+        // Mise à jour du label avec la fréquentation
+        label.setIcon(
+          L.divIcon({
+            className: "label",
+            html: route.name + "<br>Fréquentation : " + frequency
+          })
+        );
+      });
+      **/
+    }
+
+  </script>
+</body>
+
+</html>
